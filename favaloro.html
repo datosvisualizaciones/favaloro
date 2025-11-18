@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Evaluaciones - Fundación Favaloro</title>
+  <link rel="icon" href="logo_favaloro.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-text: #666666;
+      --color-text-strong: #515151;
+      --color-red-favaloro: #EF2B2D;
+      --color-blue-favaloro: #003A70;
+      --color-blue-secondary: #005A87;
+      --color-bg: #FFFFFF;
+      --color-bg-soft: #F6F6F6;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Raleway', sans-serif;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      background-color: white;
+      border-bottom: 3px solid var(--color-blue-favaloro);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.6rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1.5rem;
+      position: relative;
+    }
+
+    .logo-container {
+      flex-shrink: 0;
+    }
+
+    .logo-container img {
+      max-height: 36px;
+      width: auto;
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .hamburger .bar {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px auto;
+      background-color: var(--color-blue-favaloro);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .top-nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 0.5rem;
+      margin: 0;
+      align-items: center;
+      margin-left: 1rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .top-nav-link {
+      color: var(--color-text-strong);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .top-nav-link:hover, .top-nav-link:focus {
+      background-color: var(--color-bg-soft);
+      color: var(--color-blue-favaloro);
+      outline: none;
+    }
+
+    .top-nav-link.active {
+      background-color: var(--color-red-favaloro);
+      color: white;
+    }
+
+    .nav-eval-dropdown {
+      position: relative;
+    }
+
+    .nav-eval-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-eval-menu {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      list-style: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      min-width: 240px;
+      display: none;
+      z-index: 1200;
+    }
+
+    .nav-eval-menu li a {
+      display: block;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .nav-eval-dropdown.open .nav-eval-menu {
+      display: block;
+    }
+
+    /* Header */
+    .header {
+      background-color: var(--color-blue-favaloro);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .header p {
+      font-size: 1.4rem;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 3rem 2rem;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 5rem;
+      scroll-margin-top: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section:nth-child(even) {
+      background-color: var(--color-bg-soft);
+      padding: 3rem;
+      border-radius: 4px;
+      margin-left: -3rem;
+      margin-right: -3rem;
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+
+    .section h2 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--color-blue-favaloro);
+      margin-bottom: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .section-description {
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      color: var(--color-text-strong);
+    }
+
+    .section h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-blue-secondary);
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Button Grid */
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--color-red-favaloro);
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: var(--color-blue-favaloro);
+      color: white;
+    }
+
+    .btn-doc {
+      background-color: var(--color-blue-secondary);
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:focus {
+      outline: 2px solid var(--color-blue-secondary);
+      outline-offset: 2px;
+    }
+
+    /* Embed Containers */
+    .embed-container {
+      background-color: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text);
+      font-style: italic;
+    }
+
+    .embed-container.charts {
+      height: 100vh;
+      min-height: 0;
+      align-items: stretch;
+      border: none;
+      padding: 0;
+    }
+
+    .embed-container.reports {
+      height: 100vh;
+      min-height: 0;
+      align-items: stretch;
+      border: none;
+      padding: 0;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: var(--color-blue-favaloro);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .footer p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* Auth: Login & Profile */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 1500;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem 2.5rem;
+    }
+
+    .auth-header {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .auth-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--color-blue-favaloro);
+      margin-bottom: 0.25rem;
+    }
+
+    .auth-subtitle {
+      font-size: 0.95rem;
+      color: var(--color-text-strong);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .auth-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text-strong);
+    }
+
+    .auth-input {
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #d0d0d0;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .auth-input:focus {
+      outline: 2px solid var(--color-blue-favaloro);
+      outline-offset: 1px;
+      border-color: var(--color-blue-favaloro);
+    }
+
+    .auth-error {
+      min-height: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--color-red-favaloro);
+    }
+
+    .auth-submit {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .profile-container {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+
+    .profile-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      border: 1px solid #e0e0e0;
+      background-color: #ffffff;
+      color: var(--color-text-strong);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .profile-button:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-avatar-large {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .profile-caret {
+      font-size: 0.7rem;
+      color: #999999;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 2.4rem;
+      right: 0;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      padding: 1rem;
+      min-width: 260px;
+      display: none;
+      z-index: 1400;
+    }
+
+    .profile-summary {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-email {
+      font-size: 0.85rem;
+      color: var(--color-text);
+    }
+
+    .profile-role {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.6rem;
+      border-radius: 9999px;
+      background-color: var(--color-blue-bg-soft, rgba(0, 58, 112, 0.06));
+      color: var(--color-blue-favaloro);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .profile-logout-btn {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 9999px;
+      border: none;
+      background-color: var(--color-red-favaloro);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .profile-logout-btn:hover {
+      opacity: 0.9;
+    }
+
+    .profile-container.open .profile-dropdown {
+      display: block;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1024px) {
+      .top-nav-menu {
+        display: flex;
+        flex-direction: row;
+        gap: 0.75rem;
+        width: auto;
+        position: static;
+        padding: 0;
+      }
+
+      .hamburger {
+        display: none;
+      }
+
+      .main-content {
+        padding: 2rem 1.5rem;
+      }
+
+      .section:nth-child(even) {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.4rem;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+      }
+
+      .section h2 {
+        font-size: 2rem;
+      }
+
+      .section h3 {
+        font-size: 1.6rem;
+      }
+
+      .section-description {
+        font-size: 1.2rem;
+      }
+
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-nav-link {
+        font-size: 1rem;
+        padding: 0.6rem 1rem;
+      }
+
+      .logo-container img {
+        max-height: 50px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="auth-overlay" id="auth-overlay">
+   <div class="auth-card">
+    <div class="auth-header">
+     <h2 class="auth-title">Iniciar sesión</h2>
+     <p class="auth-subtitle">Acceso al portal de evaluaciones</p>
+    </div>
+    <form class="auth-form" id="login-form">
+     <div class="auth-field">
+      <label class="auth-label" for="login-email">Correo electrónico</label>
+      <input class="auth-input" type="email" id="login-email" autocomplete="username" required>
+     </div>
+     <div class="auth-field">
+      <label class="auth-label" for="login-password">Contraseña</label>
+      <input class="auth-input" type="password" id="login-password" autocomplete="current-password" required>
+     </div>
+     <div class="auth-error" id="login-error"></div>
+     <button type="submit" class="btn btn-primary auth-submit">Ingresar</button>
+    </form>
+   </div>
+  </div>
+  <nav class="top-nav">
+   <div class="top-nav-container">
+    <div class="logo-container"><img id="logo-img" src="" alt="Logo Fundación Favaloro" style="display: none;">
+    </div>
+    <button class="hamburger">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+    <ul class="top-nav-menu">
+     <li><a href="#evaluacion-1" class="top-nav-link">Evaluación 1 (DTI)</a></li>
+     <li><a href="#evaluacion-2" class="top-nav-link">Evaluación 2 (BBPP)</a></li>
+     <li><a href="#evaluacion-3" class="top-nav-link">Evaluación 3 (JCI)</a></li>
+    </ul>
+    <div class="profile-container" id="profile-container">
+     <button class="profile-button" id="profile-button">
+      <img src="foto_perfil_1.png" alt="Perfil" class="profile-avatar" id="profile-avatar">
+      <span class="profile-name" id="profile-name">Anabella Caputi</span>
+      <span class="profile-caret"><i class="fas fa-chevron-down"></i></span>
+     </button>
+     <div class="profile-dropdown" id="profile-dropdown">
+      <div class="profile-summary">
+       <img src="foto_perfil_1.png" alt="Perfil" class="profile-avatar-large" id="profile-avatar-large">
+       <div>
+        <div class="profile-name" id="profile-name-dropdown">Anabella Caputi</div>
+        <div class="profile-email" id="profile-email">favaloro.dti@gmail.com</div>
+        <div class="profile-role" id="profile-role">Admin</div>
+       </div>
+      </div>
+      <button type="button" class="profile-logout-btn" id="logout-button">Cerrar sesión</button>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <header class="header">
+   <h1 id="site-title">Portal de Evaluaciones</h1>
+   <p id="site-subtitle">Fundación Favaloro</p>
+  </header>
+  <div class="container">
+   <main class="main-content"><!-- Evaluación 1 -->
+    <section id="evaluacion-1" class="section visible">
+     <h2 id="eval1-title">Estándares de Calidad en Diagnóstico y Tratamiento por Imágenes</h2>
+     <p class="section-description" id="eval1-description">Poner a disposición de las administraciones sanitarias y profesionales, criterios para la organización y gestión en Diagnóstico y Tratamiento por Imágenes DTI, contribuyendo a la mejora en las condiciones de calidad de la actividad que allí se realiza.</p>
+     <div class="button-grid"><a href="https://ee.kobotoolbox.org/x/wab6AeWK" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 1: Estándares de la Gestión y Control de la Calidad en DTI</a> <a href="https://ee.kobotoolbox.org/x/n5CKGb3S" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 2: Estándares de calidad de atención y respeto de los derechos del paciente y su familia</a> <a href="https://ee.kobotoolbox.org/x/JDYka30t" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 3: Estándares de calidad para la seguridad del paciente y el personal sanitario.</a> <a href="https://ee.kobotoolbox.org/x/eT4fIZHq" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 4: Estándares de calidad estructurales y de recursos materiales</a> <a href="https://ee.kobotoolbox.org/x/FdnMmxyd" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 5: Estándares de calidad para el personal</a> <a href="https://ee.kobotoolbox.org/x/teFOuuzB" target="_blank" rel="noopener noreferrer" class="btn btn-doc"><i class="fas fa-book"></i> Documentación</a>
+     </div>
+     <h3>Gráficos y Análisis</h3>
+     <div class="embed-container charts">
+      <iframe src="https://lookerstudio.google.com/embed/reporting/c47a1038-e4d8-499e-926f-04d3ec1433e9/page/R5sfF" style="border:0; width:100%; height:100%;" allowfullscreen loading="lazy"></iframe>
+     </div>
+     <h3>Reportes e Informes</h3>
+     <div class="embed-container reports">
+      <iframe src="https://lookerstudio.google.com/embed/reporting/028d2678-b644-404a-9393-d274cc64f6ca/page/R5sfF" style="border:0; width:100%; height:100%;" allowfullscreen loading="lazy"></iframe>
+     </div>
+    </section><!-- Evaluación 2 -->
+    <section id="evaluacion-2" class="section visible">
+     <h2 id="eval2-title">Buenas Prácticas para la Mejora de la Calidad en los Servicios de Salud</h2>
+     <p class="section-description" id="eval2-description">Implementación y seguimiento de buenas prácticas orientadas a la mejora continua de la calidad en todos los servicios de salud, promoviendo la seguridad del paciente y la excelencia operativa.</p>
+     <div class="button-grid">
+      <a href="https://ee.kobotoolbox.org/x/9MAp65cL" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 1: ORGANIZACIÓN DEL ESTABLECIMIENTO</a>
+      <a href="https://ee.kobotoolbox.org/x/P2sqNnD0" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 2: GESTIÓN DE RECURSOS HUMANOS</a>
+      <a href="https://ee.kobotoolbox.org/x/IGolZA1z" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 3: GESTIÓN DE CALIDAD</a>
+      <a href="https://ee.kobotoolbox.org/x/b3wfScft" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Dimensión 4: SEGURIDAD DE LOS PACIENTES</a>
+     </div>
+     <h3>Gráficos y Análisis</h3>
+     <div class="embed-container charts">
+      <iframe src="https://lookerstudio.google.com/embed/reporting/e8853ba7-5d63-48fe-9c4b-0a21213edd7b/page/R5sfF" style="border:0; width:100%; height:100%;" allowfullscreen loading="lazy"></iframe>
+     </div>
+     <h3>Reportes e Informes</h3>
+     <div class="embed-container reports">
+      <iframe src="https://lookerstudio.google.com/embed/reporting/8c7331ab-aecb-4f55-a771-a5fe4e1ff48a/page/R5sfF" style="border:0; width:100%; height:100%;" allowfullscreen loading="lazy"></iframe>
+     </div>
+    </section>
+    <!-- Evaluación 3 -->
+    <section id="evaluacion-3" class="section visible">
+     <h2 id="eval3-title">Estándares de acreditación para hospitales de Joint Commission International</h2>
+     <p class="section-description" id="eval3-description">Evaluación de los estándares de acreditación de Joint Commission International para hospitales, incluyendo requisitos de participación, estándares centrados en el paciente, gestión de la organización sanitaria y hospital universitario.</p>
+     <div class="button-grid">
+      <a href="#" class="btn btn-primary">Sección I: Requisitos de participación en la acreditación</a>
+      <a href="#" class="btn btn-primary">Sección II: Estándares centrados en el paciente</a>
+      <a href="#" class="btn btn-primary">Sección III: Estándares de gestión de la organización sanitaria</a>
+      <a href="#" class="btn btn-primary">Sección IV: Estándares del Hospital Universitario</a>
+     </div>
+     <h3>Gráficos y Análisis</h3>
+     <p>Aún no hay datos para mostrar</p>
+     <h3>Reportes e Informes</h3>
+     <p>Aún no hay datos para mostrar</p>
+    </section>
+   </main>
+  </div>
+  <footer class="footer">
+   <p>&copy;2025 Rosario Maidana</p>
+  </footer>
+  <script>
+    const defaultConfig = {
+      site_title: "Portal de Evaluaciones",
+      site_subtitle: "Fundación Favaloro",
+      logo_url: "logo_favaloro.png",
+      eval1_title: "Estándares de Calidad en Diagnóstico y Tratamiento por Imágenes",
+      eval1_description: "Evaluación integral de los estándares de calidad aplicados en los servicios de diagnóstico por imágenes, garantizando la excelencia en la atención médica y el cumplimiento de las mejores prácticas internacionales.",
+      eval2_title: "Buenas Prácticas para la Mejora de la Calidad en los Servicios de Salud",
+      eval2_description: "Implementación y seguimiento de buenas prácticas orientadas a la mejora continua de la calidad en todos los servicios de salud, promoviendo la seguridad del paciente y la excelencia operativa.",
+      eval3_title: "Estándares de acreditación para hospitales de Joint Commission International",
+      eval3_description: "Evaluación de los estándares de acreditación de Joint Commission International para hospitales, incluyendo requisitos de participación, estándares centrados en el paciente, gestión de la organización sanitaria y hospital universitario.",
+      primary_color: "#EF2B2D",
+      secondary_color: "#003A70",
+      text_color: "#666666"
+    };
+
+    async function onConfigChange(config) {
+      document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+      document.getElementById('site-subtitle').textContent = config.site_subtitle || defaultConfig.site_subtitle;
+      document.getElementById('eval1-title').textContent = config.eval1_title || defaultConfig.eval1_title;
+      document.getElementById('eval1-description').textContent = config.eval1_description || defaultConfig.eval1_description;
+      document.getElementById('eval2-title').textContent = config.eval2_title || defaultConfig.eval2_title;
+      document.getElementById('eval2-description').textContent = config.eval2_description || defaultConfig.eval2_description;
+      document.getElementById('eval3-title').textContent = config.eval3_title || defaultConfig.eval3_title;
+      document.getElementById('eval3-description').textContent = config.eval3_description || defaultConfig.eval3_description;
+
+      const logoImg = document.getElementById('logo-img');
+      const logoUrl = config.logo_url || defaultConfig.logo_url;
+      if (logoUrl && logoUrl.trim() !== '') {
+        logoImg.src = logoUrl;
+        logoImg.style.display = 'block';
+      } else {
+        logoImg.style.display = 'none';
+      }
+
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+
+      document.documentElement.style.setProperty('--color-red-favaloro', primaryColor);
+      document.documentElement.style.setProperty('--color-blue-favaloro', secondaryColor);
+      document.documentElement.style.setProperty('--color-text', textColor);
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              config.primary_color = value;
+              window.elementSdk.setConfig({ primary_color: value });
+            }
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (value) => {
+              config.secondary_color = value;
+              window.elementSdk.setConfig({ secondary_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["site_title", config.site_title || defaultConfig.site_title],
+        ["site_subtitle", config.site_subtitle || defaultConfig.site_subtitle],
+        ["logo_url", config.logo_url || defaultConfig.logo_url],
+        ["eval1_title", config.eval1_title || defaultConfig.eval1_title],
+        ["eval1_description", config.eval1_description || defaultConfig.eval1_description],
+        ["eval2_title", config.eval2_title || defaultConfig.eval2_title],
+        ["eval2_description", config.eval2_description || defaultConfig.eval2_description],
+        ["eval3_title", config.eval3_title || defaultConfig.eval3_title],
+        ["eval3_description", config.eval3_description || defaultConfig.eval3_description]
+      ]);
+    }
+
+    // Scroll Spy Navigation
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('.section');
+      const navLinks = document.querySelectorAll('.top-nav-link');
+
+      function updateActiveLink() {
+        let currentSection = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (window.scrollY >= sectionTop - 200) {
+            currentSection = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateActiveLink);
+      updateActiveLink();
+    }
+
+    // Initialize
+    onConfigChange(defaultConfig); // Apply default config on load
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    initScrollSpy();
+
+    // Hamburger Menu
+    function initHamburgerMenu() {
+      const hamburger = document.querySelector('.hamburger');
+      const navMenu = document.querySelector('.top-nav-menu');
+
+      if (!hamburger || !navMenu) {
+        return;
+      }
+
+      hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+      });
+
+      document.querySelectorAll('.top-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+          }
+        });
+      });
+    }
+
+    function initEvalDropdown() {
+      const dropdown = document.getElementById('nav-eval-dropdown');
+      const trigger = document.getElementById('nav-eval-trigger');
+      const menu = document.getElementById('nav-eval-menu');
+
+      if (!dropdown || !trigger || !menu) {
+        return;
+      }
+
+      trigger.addEventListener('click', function (event) {
+        event.stopPropagation();
+        dropdown.classList.toggle('open');
+      });
+
+      document.addEventListener('click', function (event) {
+        if (dropdown.classList.contains('open') && !dropdown.contains(event.target)) {
+          dropdown.classList.remove('open');
+        }
+      });
+    }
+
+    function initAuth() {
+      const overlay = document.getElementById('auth-overlay');
+      const loginForm = document.getElementById('login-form');
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const errorElement = document.getElementById('login-error');
+      const profileContainer = document.getElementById('profile-container');
+      const profileButton = document.getElementById('profile-button');
+      const logoutButton = document.getElementById('logout-button');
+      const avatarSmall = document.getElementById('profile-avatar');
+      const avatarLarge = document.getElementById('profile-avatar-large');
+      const profileName = document.getElementById('profile-name');
+      const profileNameDropdown = document.getElementById('profile-name-dropdown');
+      const profileEmail = document.getElementById('profile-email');
+      const profileRole = document.getElementById('profile-role');
+
+      if (!overlay || !loginForm || !emailInput || !passwordInput || !errorElement || !profileContainer) {
+        return;
+      }
+
+      const AUTH_STORAGE_KEY = 'favaloro_auth_user';
+
+      const demoUser = {
+        name: 'Anabella Caputi',
+        email: 'favaloro.dti@gmail.com',
+        password: 'F3SC4S.21',
+        role: 'Admin',
+        avatar: 'foto_perfil_1.png'
+      };
+
+      if (avatarSmall) {
+        avatarSmall.src = demoUser.avatar;
+      }
+      if (avatarLarge) {
+        avatarLarge.src = demoUser.avatar;
+      }
+      if (profileName) {
+        profileName.textContent = demoUser.name;
+      }
+      if (profileNameDropdown) {
+        profileNameDropdown.textContent = demoUser.name;
+      }
+      if (profileEmail) {
+        profileEmail.textContent = demoUser.email;
+      }
+      if (profileRole) {
+        profileRole.textContent = demoUser.role;
+      }
+
+      function setLoggedIn(loggedIn) {
+        if (loggedIn) {
+          overlay.style.display = 'none';
+          profileContainer.style.display = 'flex';
+          document.body.style.overflow = '';
+        } else {
+          overlay.style.display = 'flex';
+          profileContainer.style.display = 'none';
+          document.body.style.overflow = 'hidden';
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          if (passwordInput) {
+            passwordInput.value = '';
+          }
+        }
+      }
+
+      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && parsed.email === demoUser.email) {
+            setLoggedIn(true);
+          } else {
+            setLoggedIn(false);
+          }
+        } catch (e) {
+          setLoggedIn(false);
+        }
+      } else {
+        setLoggedIn(false);
+      }
+
+      loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const email = (emailInput.value || '').trim();
+        const password = passwordInput.value || '';
+        if (email === demoUser.email && password === demoUser.password) {
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ email: demoUser.email, role: demoUser.role }));
+          errorElement.textContent = '';
+          setLoggedIn(true);
+        } else {
+          errorElement.textContent = 'Correo o contraseña incorrectos.';
+        }
+      });
+
+      if (profileButton) {
+        profileButton.addEventListener('click', function (event) {
+          event.stopPropagation();
+          profileContainer.classList.toggle('open');
+        });
+      }
+
+      document.addEventListener('click', function (event) {
+        if (profileContainer && profileContainer.classList.contains('open') && !profileContainer.contains(event.target)) {
+          profileContainer.classList.remove('open');
+        }
+      });
+
+      if (logoutButton) {
+        logoutButton.addEventListener('click', function () {
+          setLoggedIn(false);
+        });
+      }
+    }
+
+    initHamburgerMenu();
+    initEvalDropdown();
+    initAuth();
+  </script>
+
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a02c5f5b680ccba',t:'MTc2MzQxOTY4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

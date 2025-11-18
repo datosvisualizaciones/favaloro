@@ -299,7 +299,6 @@
       border-radius: 4px;
       padding: 2rem;
       margin-bottom: 2rem;
-      min-height: 400px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -307,20 +306,19 @@
       font-style: italic;
     }
 
-    .embed-container.charts {
-      height: 100vh;
-      min-height: 0;
+    .embed-container.charts,
+    .embed-container.reports {
       align-items: stretch;
       border: none;
       padding: 0;
     }
 
-    .embed-container.reports {
-      height: 100vh;
-      min-height: 0;
-      align-items: stretch;
-      border: none;
-      padding: 0;
+    .embed-container.charts iframe,
+    .embed-container.reports iframe {
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 4 / 3;
+      display: block;
     }
 
     /* Footer */
